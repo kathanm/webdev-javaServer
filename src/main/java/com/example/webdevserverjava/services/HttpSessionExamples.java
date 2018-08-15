@@ -19,9 +19,7 @@ public class HttpSessionExamples {
 	}
 	
 	@GetMapping("/api/session/get/{attr}")
-	public String getSessionAttribute(
-			@PathVariable("attr") String attr,
-			HttpSession session) {
+	public String getSessionAttribute(@PathVariable("attr") String attr, HttpSession session) {
 		return (String)session.getAttribute(attr);
 	}
 }

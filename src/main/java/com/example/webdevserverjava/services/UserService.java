@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,20 +31,42 @@ public class UserService {
 		return cu;
 	}
 	
-	@GetMapping("/checkLogin")
-	public User checkLogin(HttpSession session) {
-		return (User)session.getAttribute("currentUser");
+	@GetMapping("/profile")
+	public Optional<User> profile(HttpSession session) {
+		User currentUser = (User) session.getAttribute("currentUser");
+		return userRepository.findById(currentUser.getId());
 	}
-	
+		
 	@PostMapping("/login")
-	public User login(@RequestBody User user){
-		return userRepository.findUserByCredentials(user.getUsername(), user.getPassword());
+	public User login(@RequestBody User user, HttpSession session){
+		user = userRepository.findUserByCredentials(user.getUsername(), user.getPassword());
+		session.setAttribute("currentUser", user);
+		return user;
+	}	
+	
+	@PutMapping("/api/user/{userId}")
+	public User updateUser(
+			@PathVariable("userId") int id,
+			@RequestBody User newUser) {
+		Optional<User> optional = userRepository.findById(id);
+		if(optional.isPresent()) {
+			User user = optional.get();
+			user.setFirstName(newUser.getFirstName());
+			user.setLastName(newUser.getLastName());
+			return userRepository.save(user);
+		}
+		return null;
 	}
 	
 	@GetMapping("/api/user/{userId}")
 	public Optional<User> findUserByUserId(@PathVariable("userId") String userId) {
 		int id = Integer.parseInt(userId);
 		return userRepository.findById(id);
+	}
+	
+	@PostMapping("/api/logout")
+	public void logout(HttpSession session) {
+		session.invalidate();
 	}
 	
 	@GetMapping("/api/user")

@@ -47,11 +47,28 @@
             tr.append(td);
 
             var deleteBtn = $('<button>DELETE</button>');
+            deleteBtn.click(deleteUser);
+            deleteBtn.attr('id', user.id);
             td = $('<td>');
             td.append(deleteBtn);
             tr.append(td);
 
             tr.appendTo(tbody);
         }
+    }
+
+    function deleteUser(event) {
+        console.log(event);
+        var $button = $(event.currentTarget);
+        var id = $button.attr('id');
+
+        var url = "/api/user/" + id;
+        fetch(url, {
+            method: 'delete'
+        })
+            .then(function() {
+                findAllUsers()
+                    .then(renderUsers);
+            })
     }
 })();

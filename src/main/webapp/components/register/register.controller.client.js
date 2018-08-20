@@ -32,7 +32,7 @@
     }
 
     function registrationSuccessful() {
-        window.location.href = '/profile.template.client.html';
+        window.location.href = '../profile/profile.template.client.html';
     }
 
     function registrationFailed() {

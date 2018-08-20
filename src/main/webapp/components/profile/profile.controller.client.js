@@ -22,7 +22,7 @@
             lastName: $lastName.val()
         };
 
-        fetch("api/user/" + currentUser.id, {
+        fetch("/api/user/" + currentUser.id, {
             method: 'put',
             body: JSON.stringify(user),
             'credentials': 'include',
@@ -40,7 +40,7 @@
     }
 
     function profile() {
-        return fetch('profile', {
+        return fetch('/profile', {
             'credentials': 'include'
         }).then(function(response) {
             return response.json();
